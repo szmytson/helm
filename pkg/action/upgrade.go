@@ -61,6 +61,8 @@ type Upgrade struct {
 	SubNotes      bool
 	Description   string
 	PostRenderer  postrender.PostRenderer
+	// Legacy maintains backwards compatibility with Helm 2
+	Legacy bool
 }
 
 // NewUpgrade creates a new Upgrade object with the given configuration.
@@ -152,6 +154,7 @@ func (u *Upgrade) prepareUpgrade(name string, chart *chart.Chart, vals map[strin
 		Namespace: currentRelease.Namespace,
 		Revision:  revision,
 		IsUpgrade: true,
+		IsLegacy:  u.Legacy,
 	}
 
 	caps, err := u.cfg.getCapabilities()

@@ -129,6 +129,7 @@ type ReleaseOptions struct {
 	Revision  int
 	IsUpgrade bool
 	IsInstall bool
+	IsLegacy  bool
 }
 
 // ToRenderValues composes the struct from the data coming from the Releases, Charts and Values files
@@ -137,6 +138,11 @@ type ReleaseOptions struct {
 func ToRenderValues(chrt *chart.Chart, chrtVals map[string]interface{}, options ReleaseOptions, caps *Capabilities) (Values, error) {
 	if caps == nil {
 		caps = DefaultCapabilities
+	}
+
+	svc := "Helm"
+	if options.IsLegacy {
+		svc = "Tiller"
 	}
 	top := map[string]interface{}{
 		"Chart":        chrt.Metadata,
@@ -147,7 +153,7 @@ func ToRenderValues(chrt *chart.Chart, chrtVals map[string]interface{}, options 
 			"IsUpgrade": options.IsUpgrade,
 			"IsInstall": options.IsInstall,
 			"Revision":  options.Revision,
-			"Service":   "Helm",
+			"Service":   svc,
 		},
 	}
 
